@@ -1,2 +1,2 @@
-SUBDIRS = pvr-addons lib
+SUBDIRS = pvr-addons lib addons
 
