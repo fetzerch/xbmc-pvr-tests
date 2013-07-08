@@ -1,0 +1,2 @@
+SUBDIRS = pvr-addons lib
+
