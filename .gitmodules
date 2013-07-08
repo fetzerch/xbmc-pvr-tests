@@ -1,0 +1,3 @@
+[submodule "pvr-addons"]
+	path = pvr-addons
+	url = https://github.com/fetzerch/xbmc-pvr-addons
