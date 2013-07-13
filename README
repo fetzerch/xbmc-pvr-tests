@@ -1,0 +1,35 @@
+xbmc-pvr-tests
+==============
+
+A prototype for automated system testing for the MythTV (cmyth)
+XBMC PVR add-on using googletest and googlemock.
+
+The goal of this suite is testing the full PVR add-on functionality
+outside of XBMC, by triggering the PVR functions and comparing the results
+with database queries or expectations on libXBMC calls.
+
+Running in an environment outside of XBMC facilitates the use of valgrind to
+check the implementation for example for memory problems.
+
+Example: GetRecordings
+ - Query all recordings from the MythTV database
+ - Set expectation on libXBMC_PVR being called with the data from that query
+ - Call GetRecordings
+ - Check if the recordings from the database match the recordings received from
+   the mythbackend (using MythProtocol)
+
+Sources:
+ - Sources are located in ./addons/pvr.mythtv.cmyth/test/
+
+Prerequisites:
+ - Linux only
+ - Dependencies: boost headers, mysqlclient, mysql++
+
+Compiling:
+ $ ./bootstrap && ./configure && make
+
+Execute test suite:
+ $ ./addons/pvr.mythtv.cmyth/test_mythtv --mythtvhost <HOSTNAME>
+
+ - Check --help for available filter options
+
