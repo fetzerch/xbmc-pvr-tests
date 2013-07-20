@@ -45,4 +45,5 @@ test_mythtv_SOURCES = test/main.cpp \
                       test/mythtvfixture.cpp \
                       test/test_mythtv_connection.cpp \
                       test/test_mythtv_recordings.cpp \
-                      test/test_mythtv_channels.cpp
+                      test/test_mythtv_channels.cpp \
+                      test/test_mythtv_timers.cpp
