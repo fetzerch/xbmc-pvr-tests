@@ -31,6 +31,11 @@ static char *getCmdOption(char **begin, char **end, const std::string &option)
   return NULL;
 }
 
+static bool cmdOptionExists(char **begin, char **end, const std::string &option)
+{
+  return std::find(begin, end, option) != end;
+}
+
 int main(int argc, char** argv) {
   ::testing::InitGoogleMock(&argc, argv);
 
@@ -40,6 +45,9 @@ int main(int argc, char** argv) {
     g_szMythHostname = mythtv_host;
   }
   g_szDBHostname = g_szMythHostname;
+
+  if (cmdOptionExists(argv, argv + argc, "-v"))
+      g_bExtraDebug = true;
 
   return RUN_ALL_TESTS();
 }
