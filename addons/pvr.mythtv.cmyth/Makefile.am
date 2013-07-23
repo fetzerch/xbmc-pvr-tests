@@ -2,7 +2,7 @@ mythtv_addon = $(abs_top_srcdir)/pvr-addons/addons/pvr.mythtv.cmyth/src
 
 INCLUDES = @HOST_INCLUDES@
 
-AM_CPPFLAGS = -Wall -Wextra -g -O0 \
+AM_CPPFLAGS = -Wall -Wextra -Wno-missing-field-initializers -g -O0 \
               -I$(abs_top_srcdir)/lib/gtest/include \
               -I$(abs_top_srcdir)/lib/gmock/include \
               -I$(abs_top_srcdir)/mock \
