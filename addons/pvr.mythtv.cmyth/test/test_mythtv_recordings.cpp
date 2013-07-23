@@ -21,6 +21,8 @@
 #include <gmock/gmock.h>
 #include <mysql++/mysql++.h>
 
+#include <unistd.h>
+
 #include "mythtvfixture.h"
 
 #include "pvrclient-mythtv.h"
@@ -135,4 +137,71 @@ TEST_F(MythTVRecordings, MythTVTestGetRecordings)
       .Times(0);
   PVR_ERROR result = m_myth->GetRecordings(NULL);
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+}
+
+class Recordings
+{
+public:
+  void addRecording(const PVR_RECORDING *entry)
+  {
+      m_recordings.push_back(*entry);
+  }
+
+  std::list<PVR_RECORDING> getRecordings() const
+  {
+      return m_recordings;
+  }
+
+private:
+  std::list<PVR_RECORDING> m_recordings;
+};
+
+TEST_F(MythTVRecordings, MythTVTestPlayRecordingNotFound)
+{
+  PVR_RECORDING recording;
+  memset(&recording, 0, sizeof(PVR_RECORDING));
+
+  // Start playback
+  bool res = m_myth->OpenRecordedStream(recording);
+  EXPECT_FALSE(res);
+
+  if (res)
+    m_myth->CloseRecordedStream();
+}
+
+TEST_F(MythTVRecordings, MythTVTestPlayRecording)
+{
+  // Get recording
+  Recordings recordings;
+  EXPECT_CALL(*m_xbmc_pvr, TransferRecordingEntry(_, _))
+      .WillRepeatedly(WithArgs<1>(Invoke(&recordings, &Recordings::addRecording)));
+  PVR_ERROR result = m_myth->GetRecordings(NULL);
+  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+  PVR_RECORDING recording = *recordings.getRecordings().begin();
+
+  // Start playback
+  bool res = m_myth->OpenRecordedStream(recording);
+  EXPECT_TRUE(res);
+
+  // Position
+  long long pos = m_myth->SeekRecordedStream(0, SEEK_SET);
+  EXPECT_EQ(pos, 0);
+
+  // Read length
+  long long length = m_myth->LengthRecordedStream();
+  EXPECT_GT(length, 0);
+
+  // Read packets
+  int len_read;
+  unsigned char buffer[32*1024];
+  for (int i = 0; i < 5; i++)
+  {
+    len_read = m_myth->ReadRecordedStream(buffer, sizeof(buffer));
+    EXPECT_LE(len_read, sizeof(buffer));
+
+    usleep(1000); // TODO: Measure XBMC's real buffersize, and read frequency
+  }
+
+  // Close stream
+  m_myth->CloseRecordedStream();
 }
