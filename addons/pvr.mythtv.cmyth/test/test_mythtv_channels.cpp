@@ -111,6 +111,11 @@ TEST_F(MythTVChannels, MythTVGetChannels) {
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
 }
 
+TEST_F(MythTVChannels, MythTVGetChannelGroupsAmount) {
+  int channelGroupsAmount = m_myth->GetChannelGroupsAmount();
+  EXPECT_GT(channelGroupsAmount, 0);
+}
+
 TEST_F(MythTVChannels, MythTVGetChannelGroups) {
   PVR_ERROR result = m_myth->GetChannelGroups(NULL, false);
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
