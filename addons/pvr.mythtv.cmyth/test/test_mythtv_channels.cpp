@@ -120,3 +120,13 @@ TEST_F(MythTVChannels, MythTVGetChannelGroups) {
   PVR_ERROR result = m_myth->GetChannelGroups(NULL, false);
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
 }
+
+TEST_F(MythTVChannels, MythTVGetChannelGroupMembers)
+{
+  std::list<PVR_CHANNEL_GROUP> channelGroups = GetChannelGroups();
+  std::list<PVR_CHANNEL_GROUP>::iterator channelGroupIt;
+  for (channelGroupIt = channelGroups.begin(); channelGroupIt != channelGroups.end(); ++channelGroupIt)
+  {
+    m_myth->GetChannelGroupMembers(NULL, *channelGroupIt);
+  }
+}
