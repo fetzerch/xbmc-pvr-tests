@@ -18,6 +18,7 @@
  */
 
 #include "mythtvfixture.h"
+#include "transferutils.h"
 
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
@@ -129,6 +130,43 @@ void MythTVFixture::disableFileCaching()
   EXPECT_CALL(*m_xbmc_addon, OpenFileForWrite(_, _))
         .Times(AnyNumber())
         .WillRepeatedly(ReturnNull());
+}
+
+std::list<PVR_CHANNEL> MythTVFixture::GetChannels()
+{
+  TransferUtil<PVR_CHANNEL> transfer;
+  EXPECT_CALL(*m_xbmc_pvr, TransferChannelEntry(_, _))
+      .WillRepeatedly(WithArgs<1>(Invoke(&transfer, &TransferUtil<PVR_CHANNEL>::Add)));
+  m_myth->GetChannels(NULL, false);
+  return transfer.GetList();
+}
+
+std::list<PVR_CHANNEL_GROUP> MythTVFixture::GetChannelGroups()
+{
+  TransferUtil<PVR_CHANNEL_GROUP> transfer;
+  EXPECT_CALL(*m_xbmc_pvr, TransferChannelGroup(_, _))
+      .WillRepeatedly(WithArgs<1>(Invoke(&transfer, &TransferUtil<PVR_CHANNEL_GROUP>::Add)));
+  m_myth->GetChannelGroups(NULL, false);
+  return transfer.GetList();
+}
+
+std::list<PVR_RECORDING> MythTVFixture::GetRecordings()
+{
+  TransferUtil<PVR_RECORDING> transfer;
+  EXPECT_CALL(*m_xbmc_pvr, TransferRecordingEntry(_, _))
+      .WillRepeatedly(WithArgs<1>(Invoke(&transfer, &TransferUtil<PVR_RECORDING>::Add)));
+  m_myth->GetRecordings(NULL);
+  return transfer.GetList();
+}
+
+
+std::list<PVR_TIMER> MythTVFixture::GetTimers()
+{
+  TransferUtil<PVR_TIMER> transfer;
+  EXPECT_CALL(*m_xbmc_pvr, TransferTimerEntry(_, _))
+      .WillRepeatedly(WithArgs<1>(Invoke(&transfer, &TransferUtil<PVR_TIMER>::Add)));
+  m_myth->GetTimers(NULL);
+  return transfer.GetList();
 }
 
 PVRClientMythTV *MythTVFixture::m_myth = NULL;

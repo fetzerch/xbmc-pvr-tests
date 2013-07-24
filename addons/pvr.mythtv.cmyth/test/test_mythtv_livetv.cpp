@@ -34,23 +34,6 @@ class MythTVLiveTV : public MythTVFixture
 {
 };
 
-class Channels
-{
-public:
-  void addChannel(const PVR_CHANNEL *entry)
-  {
-    m_channels.push_back(*entry);
-  }
-
-  std::list<PVR_CHANNEL> getChannels() const
-  {
-    return m_channels;
-  }
-
-private:
-  std::list<PVR_CHANNEL> m_channels;
-};
-
 TEST_F(MythTVLiveTV, MythTVTestLiveTVChannelNotFound)
 {
   PVR_CHANNEL channel;
@@ -70,13 +53,8 @@ TEST_F(MythTVLiveTV, MythTVTestLiveTVChannelNotFound)
 
 TEST_F(MythTVLiveTV, MythTVTestLiveTV)
 {
-  // Get channels
-  Channels channels;
-  EXPECT_CALL(*m_xbmc_pvr, TransferChannelEntry(_, _))
-      .WillRepeatedly(WithArgs<1>(Invoke(&channels, &Channels::addChannel)));
-  PVR_ERROR result = m_myth->GetChannels(NULL, false);
-  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
-  PVR_CHANNEL channel = *channels.getChannels().begin();
+  // Get channel
+  PVR_CHANNEL channel = *GetChannels().begin();
 
   // Start playback
   bool res = m_myth->OpenLiveStream(channel);

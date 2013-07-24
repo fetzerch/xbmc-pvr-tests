@@ -139,23 +139,6 @@ TEST_F(MythTVRecordings, MythTVTestGetRecordings)
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
 }
 
-class Recordings
-{
-public:
-  void addRecording(const PVR_RECORDING *entry)
-  {
-      m_recordings.push_back(*entry);
-  }
-
-  std::list<PVR_RECORDING> getRecordings() const
-  {
-      return m_recordings;
-  }
-
-private:
-  std::list<PVR_RECORDING> m_recordings;
-};
-
 TEST_F(MythTVRecordings, MythTVTestPlayRecordingNotFound)
 {
   PVR_RECORDING recording;
@@ -172,12 +155,7 @@ TEST_F(MythTVRecordings, MythTVTestPlayRecordingNotFound)
 TEST_F(MythTVRecordings, MythTVTestPlayRecording)
 {
   // Get recording
-  Recordings recordings;
-  EXPECT_CALL(*m_xbmc_pvr, TransferRecordingEntry(_, _))
-      .WillRepeatedly(WithArgs<1>(Invoke(&recordings, &Recordings::addRecording)));
-  PVR_ERROR result = m_myth->GetRecordings(NULL);
-  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
-  PVR_RECORDING recording = *recordings.getRecordings().begin();
+  PVR_RECORDING recording = *GetRecordings().begin();
 
   // Start playback
   bool res = m_myth->OpenRecordedStream(recording);

@@ -20,7 +20,11 @@
 #ifndef MYTHTVFIXTURE_H
 #define MYTHTVFIXTURE_H
 
+#include "client.h"
+
 #include <gtest/gtest.h>
+
+#include <list>
 
 class PVRClientMythTV;
 namespace ADDON {
@@ -43,6 +47,11 @@ protected:
 
   virtual void SetUp();
   virtual void TearDown();
+
+  std::list<PVR_CHANNEL> GetChannels();
+  std::list<PVR_CHANNEL_GROUP> GetChannelGroups();
+  std::list<PVR_RECORDING> GetRecordings();
+  std::list<PVR_TIMER> GetTimers();
 
   static PVRClientMythTV              *m_myth;
   static ADDON::CHelper_libXBMC_addon *m_xbmc_addon;
