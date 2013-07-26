@@ -162,6 +162,16 @@ TEST_F(MythTVRecordings, MythTVTestRecordingPlayCount)
   Mock::VerifyAndClear(m_xbmc_pvr);
 }
 
+TEST_F(MythTVRecordings, MythTVTestGetRecordingsEdl)
+{
+  PVR_RECORDING recording = *GetRecordings().begin();
+  PVR_EDL_ENTRY edl[128];
+  int size = sizeof(edl);
+
+  PVR_ERROR result = m_myth->GetRecordingEdl(recording, edl, &size);
+  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+}
+
 TEST_F(MythTVRecordings, MythTVTestPlayRecordingNotFound)
 {
   PVR_RECORDING recording;
