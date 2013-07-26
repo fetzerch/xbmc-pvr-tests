@@ -53,7 +53,11 @@ void MythTVFixture::SetUp()
 {
   // The expectations on the xbmc libs can be reconfigured
   // in the testcases, if needed.
-  disableLoggingAndNotifications();
+
+  if (g_bExtraDebug)
+    enableLoggingAndNotifications();
+  else
+    disableLoggingAndNotifications();
   disableFileCaching();
 }
 
