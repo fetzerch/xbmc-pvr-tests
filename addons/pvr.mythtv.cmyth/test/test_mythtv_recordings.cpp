@@ -126,6 +126,8 @@ TEST_F(MythTVRecordings, MythTVTestRecordingsAmount)
       .Times(0);
   PVR_ERROR result = m_myth->GetRecordings(NULL);
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
 }
 
 TEST_F(MythTVRecordings, MythTVTestGetRecordings)
@@ -137,6 +139,8 @@ TEST_F(MythTVRecordings, MythTVTestGetRecordings)
       .Times(0);
   PVR_ERROR result = m_myth->GetRecordings(NULL);
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
 }
 
 TEST_F(MythTVRecordings, MythTVTestPlayRecordingNotFound)

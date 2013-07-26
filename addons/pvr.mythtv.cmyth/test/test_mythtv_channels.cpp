@@ -99,6 +99,8 @@ TEST_F(MythTVChannels, MythTVGetNumChannels)
       .Times(channelsAmount);
   PVR_ERROR result = m_myth->GetChannels(NULL, false);
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
 }
 
 TEST_F(MythTVChannels, MythTVGetChannels) {
@@ -109,6 +111,8 @@ TEST_F(MythTVChannels, MythTVGetChannels) {
       .Times(0);
   PVR_ERROR result = m_myth->GetChannels(NULL, false);
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
 }
 
 TEST_F(MythTVChannels, MythTVGetChannelGroupsAmount) {
