@@ -235,7 +235,7 @@ TEST_F(MythTVRecordings, MythTVTestPlayRecording)
     len_read = m_myth->ReadRecordedStream(buffer, sizeof(buffer));
     EXPECT_LE(len_read, (int)sizeof(buffer));
 
-    usleep(1000); // TODO: Measure XBMC's real buffersize, and read frequency
+    sleep(1); // TODO: Measure XBMC's real buffersize, and read frequency
   }
 
   // Close stream
