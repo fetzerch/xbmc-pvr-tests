@@ -121,16 +121,32 @@ TEST_F(MythTVChannels, MythTVGetChannelGroupsAmount) {
 }
 
 TEST_F(MythTVChannels, MythTVGetChannelGroups) {
+  EXPECT_CALL(*m_xbmc_pvr, TransferChannelGroup(_, _))
+      .Times(AtLeast(1));
+  EXPECT_CALL(*m_xbmc_pvr, TriggerChannelGroupsUpdate())
+      .Times(0);
   PVR_ERROR result = m_myth->GetChannelGroups(NULL, false);
   EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
 }
 
 TEST_F(MythTVChannels, MythTVGetChannelGroupMembers)
 {
   std::list<PVR_CHANNEL_GROUP> channelGroups = GetChannelGroups();
+
+  EXPECT_CALL(*m_xbmc_pvr, TransferChannelGroupMember(_, _))
+      .Times(AtLeast(1));
+  EXPECT_CALL(*m_xbmc_pvr, TriggerChannelUpdate())
+      .Times(0);
+  EXPECT_CALL(*m_xbmc_pvr, TriggerChannelGroupsUpdate())
+      .Times(0);
+
   std::list<PVR_CHANNEL_GROUP>::iterator channelGroupIt;
   for (channelGroupIt = channelGroups.begin(); channelGroupIt != channelGroups.end(); ++channelGroupIt)
   {
     m_myth->GetChannelGroupMembers(NULL, *channelGroupIt);
   }
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
 }
