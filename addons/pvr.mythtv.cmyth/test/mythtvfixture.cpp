@@ -159,10 +159,11 @@ std::list<PVR_RECORDING> MythTVFixture::GetRecordings()
   TransferUtil<PVR_RECORDING> transfer;
   EXPECT_CALL(*m_xbmc_pvr, TransferRecordingEntry(_, _))
       .WillRepeatedly(WithArgs<1>(Invoke(&transfer, &TransferUtil<PVR_RECORDING>::Add)));
+  EXPECT_CALL(*m_xbmc_pvr, TriggerRecordingUpdate())
+      .Times(AnyNumber());
   m_myth->GetRecordings(NULL);
   return transfer.GetList();
 }
-
 
 std::list<PVR_TIMER> MythTVFixture::GetTimers()
 {
