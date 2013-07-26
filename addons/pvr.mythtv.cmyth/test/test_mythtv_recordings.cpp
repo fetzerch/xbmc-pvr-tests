@@ -162,6 +162,31 @@ TEST_F(MythTVRecordings, MythTVTestRecordingPlayCount)
   Mock::VerifyAndClear(m_xbmc_pvr);
 }
 
+// TODO: SetRecordingLastPlayedPosition leads to TriggerRecordingUpdate,
+//       that need to update the list of recordings.
+TEST_F(MythTVRecordings, DISABLED_MythTVTestRecordingLastPlayedPosition)
+{
+  PVR_RECORDING recording = *GetRecordings().begin();
+  int originalPlayedPosition = recording.iLastPlayedPosition;
+  sleep(5);
+
+  int lastPlayedPosition = m_myth->GetRecordingLastPlayedPosition(recording);
+  EXPECT_EQ(originalPlayedPosition, lastPlayedPosition);
+
+  int newPlayedPosition = originalPlayedPosition > 0 ? 0 : 10;
+  PVR_ERROR result = m_myth->SetRecordingLastPlayedPosition(recording, newPlayedPosition);
+  sleep(5);
+  lastPlayedPosition = m_myth->GetRecordingLastPlayedPosition(recording);
+  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+  EXPECT_EQ(lastPlayedPosition, newPlayedPosition);
+
+  result = m_myth->SetRecordingLastPlayedPosition(recording, originalPlayedPosition);
+  sleep(5);
+  lastPlayedPosition = m_myth->GetRecordingLastPlayedPosition(recording);
+  EXPECT_EQ(lastPlayedPosition, originalPlayedPosition);
+  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+}
+
 TEST_F(MythTVRecordings, MythTVTestGetRecordingsEdl)
 {
   PVR_RECORDING recording = *GetRecordings().begin();
