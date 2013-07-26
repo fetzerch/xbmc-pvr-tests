@@ -56,6 +56,10 @@ TEST_F(MythTVLiveTV, MythTVTestLiveTV)
   // Get channel
   PVR_CHANNEL channel = *GetChannels().begin();
 
+  // We should receive file size updates for the Live TV recording
+  EXPECT_CALL(*m_xbmc_pvr, TransferRecordingEntry(_, _))
+      .Times(AtLeast(1));
+
   // Start playback
   bool res = m_myth->OpenLiveStream(channel);
   EXPECT_TRUE(res);
@@ -81,4 +85,6 @@ TEST_F(MythTVLiveTV, MythTVTestLiveTV)
 
   // Close stream
   m_myth->CloseLiveStream();
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
 }
