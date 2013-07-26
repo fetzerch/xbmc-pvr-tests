@@ -143,6 +143,25 @@ TEST_F(MythTVRecordings, MythTVTestGetRecordings)
   Mock::VerifyAndClear(m_xbmc_pvr);
 }
 
+TEST_F(MythTVRecordings, MythTVTestRecordingPlayCount)
+{
+  PVR_RECORDING recording = *GetRecordings().begin();
+  int originalPlayCount = recording.iPlayCount;
+
+  EXPECT_CALL(*m_xbmc_pvr, TriggerRecordingUpdate()).Times(3);
+
+  PVR_ERROR result = m_myth->SetRecordingPlayCount(recording, originalPlayCount > 0 ? 0 : 1);
+  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+  result = m_myth->SetRecordingPlayCount(recording, originalPlayCount);
+  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+
+  // Test to set it again to the same value, since this was an issue in older versions
+  result = m_myth->SetRecordingPlayCount(recording, originalPlayCount);
+  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
+}
+
 TEST_F(MythTVRecordings, MythTVTestPlayRecordingNotFound)
 {
   PVR_RECORDING recording;
