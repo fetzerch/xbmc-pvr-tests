@@ -150,3 +150,26 @@ TEST_F(MythTVChannels, MythTVGetChannelGroupMembers)
 
   Mock::VerifyAndClear(m_xbmc_pvr);
 }
+
+TEST_F(MythTVChannels, MythTVGetGuide)
+{
+  time_t startTime = time(NULL);
+  time_t endTime = time(NULL);
+  struct tm* tm = localtime(&endTime);
+  tm->tm_mday += 2;
+  endTime = mktime(tm);
+
+  std::list<PVR_CHANNEL> channels = GetChannels();
+  std::list<PVR_CHANNEL>::iterator channelIt;
+
+  EXPECT_CALL(*m_xbmc_pvr, TransferEpgEntry(_, _))
+      .Times(AtLeast(1));
+
+  for (channelIt = channels.begin(); channelIt != channels.end(); ++channelIt)
+  {
+    PVR_ERROR result = m_myth->GetEPGForChannel(NULL, *channelIt, startTime, endTime);
+    EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+  }
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
+}
