@@ -54,23 +54,29 @@ TEST_F(MythTVLiveTV, MythTVTestLiveTVChannelNotFound)
 TEST_F(MythTVLiveTV, MythTVTestLiveTV)
 {
   // Get channel
-  PVR_CHANNEL channel = *GetChannels().begin();
+  std::list<PVR_CHANNEL> channels = GetChannels();
+  std::list<PVR_CHANNEL>::iterator channelIt = channels.begin();
+
+  int currentChannel = m_myth->GetCurrentClientChannel();
+  EXPECT_EQ(currentChannel, -1);
 
   // We should receive file size updates for the Live TV recording
   EXPECT_CALL(*m_xbmc_pvr, TransferRecordingEntry(_, _))
       .Times(AtLeast(1));
 
   // Start playback
-  bool res = m_myth->OpenLiveStream(channel);
+  bool res = m_myth->OpenLiveStream(*channelIt);
   EXPECT_TRUE(res);
 
   // Position
   long long pos = m_myth->SeekLiveStream(0, SEEK_SET);
   EXPECT_EQ(pos, 0);
 
-  // Read length
+  // Get stream info
   long long length = m_myth->LengthLiveStream();
   EXPECT_GT(length, 0);
+  currentChannel = m_myth->GetCurrentClientChannel();
+  EXPECT_EQ(currentChannel, static_cast<int>((*channelIt).iUniqueId));
 
   // Read packets
   int len_read;
@@ -78,10 +84,18 @@ TEST_F(MythTVLiveTV, MythTVTestLiveTV)
   for (int i = 0; i < 5; i++)
   {
     len_read = m_myth->ReadLiveStream(buffer, sizeof(buffer));
-    EXPECT_LE(len_read, (int)sizeof(buffer));
+    EXPECT_LE(len_read, static_cast<int>(sizeof(buffer)));
 
     sleep(1); // TODO: Measure XBMC's real buffersize, and read frequency
   }
+
+  // Signal status
+  PVR_SIGNAL_STATUS signalStatus;
+  m_myth->SignalStatus(signalStatus);
+
+  // Switch channels
+  channelIt++;
+  m_myth->SwitchChannel(*channelIt);
 
   // Close stream
   m_myth->CloseLiveStream();
