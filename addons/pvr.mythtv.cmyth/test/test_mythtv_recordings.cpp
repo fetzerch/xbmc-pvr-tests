@@ -143,6 +143,44 @@ TEST_F(MythTVRecordings, MythTVTestGetRecordings)
   Mock::VerifyAndClear(m_xbmc_pvr);
 }
 
+TEST_F(MythTVRecordings, MythTVTestGetRecordingsWithImages)
+{
+  int dummy = 5;
+  void *file = &dummy;
+
+  EXPECT_CALL(*m_xbmc_pvr, TriggerRecordingUpdate()).Times(1);
+  EXPECT_CALL(*m_xbmc_pvr, TransferRecordingEntry(_, _))
+      .Times(AnyNumber());
+
+  EXPECT_CALL(*m_xbmc_addon, DirectoryExists(_))
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*m_xbmc_addon, CreateDirectory(_))
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*m_xbmc_addon, FileExists(_, _))
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(false));
+  EXPECT_CALL(*m_xbmc_addon, OpenFileForWrite(_, _))
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(file));
+  EXPECT_CALL(*m_xbmc_addon, RemoveDirectory(_))
+      .Times(AnyNumber())
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*m_xbmc_addon, WriteFile(_, _, _))
+      .Times(AnyNumber())
+      .WillRepeatedly(ReturnArg<2>());
+  EXPECT_CALL(*m_xbmc_addon, CloseFile(_))
+      .Times(AnyNumber());
+
+  PVR_ERROR result = m_myth->GetRecordings(NULL);
+  EXPECT_EQ(result, PVR_ERROR_NO_ERROR);
+
+  sleep(5);
+
+  Mock::VerifyAndClear(m_xbmc_pvr);
+}
+
 TEST_F(MythTVRecordings, MythTVTestRecordingPlayCount)
 {
   PVR_RECORDING recording = *GetRecordings().begin();
