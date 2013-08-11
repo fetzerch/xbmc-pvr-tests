@@ -1,0 +1,11 @@
+--memcheck:leak-check=full
+--memcheck:show-possibly-lost=yes
+--memcheck:track-origins=yes
+--memcheck:track-origins=yes
+--callgrind:dump-instr=yes
+--callgrind:compress-strings=no
+--callgrind:compress-pos=no
+--callgrind:simulate-cache=yes
+--callgrind:collect-jumps=yes
+--suppressions=./.valgrind.supp
+

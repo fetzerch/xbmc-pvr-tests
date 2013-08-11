@@ -1,0 +1,34 @@
+{
+   valgrind sendmsg issue: http://sourceware.org/bugzilla/show_bug.cgi?id=14687
+   Memcheck:Param
+   sendmsg(mmsg[0].msg_hdr)
+   fun:sendmmsg
+   fun:__libc_res_nsend
+   fun:__libc_res_nquery
+   fun:__libc_res_nsearch
+   fun:_nss_dns_gethostbyname4_r
+   fun:gaih_inet
+   fun:getaddrinfo
+}
+
+{
+   mysql_init issue
+   Memcheck:Leak
+   fun:calloc
+   fun:_dl_allocate_tls
+   fun:pthread_create@@GLIBC_2.2.5
+   fun:my_thread_global_init
+   fun:my_init
+   fun:mysql_server_init
+   fun:mysql_init
+}
+
+{
+   CThread create issue
+   Memcheck:Leak
+   fun:calloc
+   fun:_dl_allocate_tls
+   fun:pthread_create@@GLIBC_2.2.5
+   fun:_ZN8PLATFORM7CThread12CreateThreadEb
+}
+
